@@ -1,0 +1,19 @@
+{
+  "name": "@flatverse/fridgely-server",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc --watch"
+  },
+  "author": "Cody Thompson",
+  "license": "UNLICENSED",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@flatverse/fridgely-model": "^0.0.0"
+  }
+}
