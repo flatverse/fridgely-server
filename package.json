@@ -5,15 +5,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && tsc",
-    "dev": "tsc --watch"
+    "watch": "tsc --watch",
+    "dev": "nodemon --watch dist -- run"
   },
   "author": "Cody Thompson",
   "license": "UNLICENSED",
   "description": "",
   "devDependencies": {
+    "@types/node": "^22.10.2",
+    "nodemon": "^3.1.9",
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@flatverse/fridgely-model": "^0.0.0"
+    "@flatverse/fridgely-model": "^0.0.1"
   }
 }
