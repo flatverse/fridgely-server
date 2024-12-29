@@ -9,28 +9,38 @@ export interface SerializedFridgeState {
 }
 
 export class FridgeState {
-  private refsById:Record<string,Referencable<string>> = {}
-  private refsByType:Record<string,Referencable<string>[]> = {}
+  private refsById:Record<string,Referencable<string>>
+  private refsByType:Record<string,Referencable<string>[]>
 
   constructor(
     readonly version:number,
     readonly references: Referencable<string>[],
     readonly messages:{level:"WARNING"|"ERROR", message:string, refIds?:string[]}[] = []
   ) {
-    for (let ref of references) {
-      const {id, type} = ref
-      if (id in this.refsById) {
-        const {type:existingType} = this.refsById[id]
-        const isReallyBad = existingType !== type? "ERROR" : "WARNING"
-        this.pushMessage(isReallyBad, `Duplicate ref ids found. types ${type}, ${existingType}`, [id])
+    this.buildDictionaries()
+  }
+
+  private addToDictionaries(ref:Referencable<string>):void {
+    const {id, type} = ref
+    if (id in this.refsById) {
+      const {type:existingType} = this.refsById[id]
+      const isReallyBad = existingType !== type? "ERROR" : "WARNING"
+      this.pushMessage(isReallyBad, `Duplicate ref ids found. types ${type}, ${existingType}`, [id])
+    }
+    else {
+      this.refsById[id] = ref
+      if (!(type in this.refsByType)) {
+        this.refsByType[type] = []
       }
-      else {
-        this.refsById[id] = ref
-        if (!(type in this.refsByType)) {
-          this.refsByType[type] = []
-        }
-        this.refsByType[type].push(ref)
-      }
+      this.refsByType[type].push(ref)
+    }
+  }
+
+  private buildDictionaries():void {
+    this.refsById = {}
+    this.refsByType = {}
+    for (let ref of this.references) {
+      this.addToDictionaries(ref)
     }
   }
 
@@ -50,8 +60,16 @@ export class FridgeState {
     return type in this.refsByType? this.refsByType[type] as M[] : []
   }
 
-  getRef<M extends Referencable<T>, T extends string = string>(id:string):M|undefined {
+  getRef<M extends Referencable<any>>(id:string):M|undefined {
     return this.refsById[id] as M|undefined
+  }
+
+  addRef<M extends Referencable<any>>(ref:M):void {
+    if (ref.id in this.refsById) {
+      throw Error("Can't add ref to fridge state - ID matches existing ref. " + ref.id)
+    }
+    this.references.push(ref)
+    this.addToDictionaries(ref)
   }
 
   serialize():string {
