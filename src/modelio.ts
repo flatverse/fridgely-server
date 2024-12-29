@@ -1,4 +1,4 @@
-import { CURRENT_VERSION, FridgeState } from "@flatverse/fridgely-model"
+import { CURRENT_VERSION, FridgeState } from "./FridgeState"
 import { readFile, access, rename, writeFile, mkdir, copyFile } from "fs/promises"
 import path from "path"
 

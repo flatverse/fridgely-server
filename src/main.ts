@@ -1,3 +1,4 @@
+import { FridgeState } from "./FridgeState"
 import { ModelIO, ModeFileDB } from "./modelio"
 
 export async function setup():Promise<void> {
@@ -21,7 +22,7 @@ export async function run() {
   })
   try {
     const model = await modelio.read()
-    console.log(model)
+    console.log(model.serialize())
     // model.pushMessage("WARNING", "TESTING1")
     await modelio.write(model)
   }
